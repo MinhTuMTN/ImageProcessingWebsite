@@ -45,86 +45,92 @@ else:
         'Chọn nội dụng', options=chapter_contents[chapter], on_change=content_on_change)
 
     st.title(content)
-    col1, col2 = st.columns(2)
-    with col1:
-        st.header("Ảnh gốc")
 
-        def file_on_change():
-            st.session_state.file = True
+    if (content == 'Vẽ bộ lọc Notch Reject'):
+        result = ct4.DrawNotchRejectFilter()
+        st.image(result, caption='Vẽ bộ lọc Notch Reject')
+    else:
+        col1, col2 = st.columns(2)
+        with col1:
+            st.header("Ảnh gốc")
 
-        orginal_container = st.empty()
-        file = orginal_container.file_uploader(
-            "Chọn ảnh", on_change=file_on_change)
+            def file_on_change():
+                st.session_state.file = True
 
-        btn_col_1, btn_col_2 = st.columns([1, 4])
-        with btn_col_1:
-            button = st.button("Xử lý")
-        with btn_col_2:
-            reset = st.button("Reset")
+            orginal_container = st.empty()
+            file = orginal_container.file_uploader(
+                "Chọn ảnh", on_change=file_on_change)
 
-    if file is not None:
-        if button:
-            with col2:
-                st.header('Kết quả')
-                image = Image.open(file)
-                image_cv2 = np.array(image)
+            btn_col_1, btn_col_2 = st.columns([1, 4])
+            with btn_col_1:
+                button = st.button("Xử lý")
+            with btn_col_2:
+                reset = st.button("Reset")
 
-                if image_cv2.ndim == 3 and content != 'Cân bằng Histogram ảnh màu':
-                    image_cv2 = cv2.cvtColor(image_cv2, cv2.COLOR_RGB2GRAY)
-                if (content == 'Làm âm ảnh (Negative)'):
-                    result = ct3.Negative(image_cv2)
-                elif (content == 'Logarit ảnh'):
-                    result = ct3.Logarit(image_cv2)
-                elif (content == 'Lũy thừa ảnh'):
-                    result = ct3.Power(image_cv2)
-                elif (content == 'Biến đổi tuyến tính từng phần'):
-                    result = ct3.PiecewiseLinear(image_cv2)
-                elif (content == 'Histogram'):
-                    result = ct3.Histogram(image_cv2)
-                elif (content == 'Cân bằng Histogram'):
-                    result = ct3.HistEqual(image_cv2)
-                elif (content == 'Cân bằng Histogram ảnh màu'):
-                    result = ct3.HistEqualColor(image_cv2)
-                elif (content == 'Local Histogram'):
-                    result = ct3.LocalHist(image_cv2)
-                elif (content == 'Thống kê Histogram'):
-                    result = ct3.HistStat(image_cv2)
-                elif (content == 'Lọc box'):
-                    result = ct3.BoxFilter(image_cv2)
-                elif (content == 'Lọc Gauss'):
-                    result = ct3.GaussFilter(image_cv2)
-                elif (content == 'Phân ngưỡng'):
-                    result = ct3.Threshold(image_cv2)
-                elif (content == 'Lọc Median'):
-                    result = ct3.MedianFilter(image_cv2)
-                elif (content == 'Sharpen'):
-                    result = ct3.Sharpen(image_cv2)
-                elif (content == 'Gradient'):
-                    result = ct3.Gradient(image_cv2)
-                elif (content == 'Spectrum'):
-                    result = ct4.Spectrum(image_cv2)
-                elif (content == 'Lọc trong miền tần số - highpass filter'):
-                    result = ct4.FrequencyFilter(image_cv2)
-                elif (content == 'Xóa nhiễu moire'):
-                    result = ct4.RemoveMoire(image_cv2)
-                elif (content == 'Tạo nhiễu chuyển động'):
-                    result = ct5.CreateMotionNoise(image_cv2)
-                elif (content == 'Gỡ nhiễu của ảnh có ít nhiễu'):
-                    result = ct5.DenoiseMotion(image_cv2)
-                elif (content == 'Gỡ nhiễu của ảnh có nhiều nhiễu'):
-                    result = ct5.DenoisesMotion(image_cv2)
-                elif (content == 'Đếm thành phần liên thông'):
-                    result = ct9.ConnectedComponent(image_cv2)
-                elif (content == 'Đếm hạt gạo'):
-                    result = ct9.CountRice(image_cv2)
+        if file is not None:
+            if reset:
+                st.session_state.file = False
 
-                st.image(result, caption='Ảnh đã được xử lý')
-        if reset:
-            st.session_state.file = False
+        # Xử lý ảnh
+        with col1:
+            if file is not None and st.session_state.get('file'):
+                st.session_state.file = file
+                img = Image.open(file)
+                orginal_container.image(img, caption="Ảnh gốc")
+        if file is not None:
+            if button:
+                with col2:
+                    st.header('Kết quả')
+                    image = Image.open(file)
+                    image_cv2 = np.array(image)
 
-    # Xử lý ảnh
-    with col1:
-        if file is not None and st.session_state.get('file'):
-            st.session_state.file = file
-            img = Image.open(file)
-            orginal_container.image(img, caption="Ảnh gốc")
+                    if image_cv2.ndim == 3 and content != 'Cân bằng Histogram ảnh màu':
+                        image_cv2 = cv2.cvtColor(image_cv2, cv2.COLOR_RGB2GRAY)
+                    if (content == 'Làm âm ảnh (Negative)'):
+                        result = ct3.Negative(image_cv2)
+                    elif (content == 'Logarit ảnh'):
+                        result = ct3.Logarit(image_cv2)
+                    elif (content == 'Lũy thừa ảnh'):
+                        result = ct3.Power(image_cv2)
+                    elif (content == 'Biến đổi tuyến tính từng phần'):
+                        result = ct3.PiecewiseLinear(image_cv2)
+                    elif (content == 'Histogram'):
+                        result = ct3.Histogram(image_cv2)
+                    elif (content == 'Cân bằng Histogram'):
+                        result = ct3.HistEqual(image_cv2)
+                    elif (content == 'Cân bằng Histogram ảnh màu'):
+                        result = ct3.HistEqualColor(image_cv2)
+                    elif (content == 'Local Histogram'):
+                        result = ct3.LocalHist(image_cv2)
+                    elif (content == 'Thống kê Histogram'):
+                        result = ct3.HistStat(image_cv2)
+                    elif (content == 'Lọc box'):
+                        result = ct3.BoxFilter(image_cv2)
+                    elif (content == 'Lọc Gauss'):
+                        result = ct3.GaussFilter(image_cv2)
+                    elif (content == 'Phân ngưỡng'):
+                        result = ct3.Threshold(image_cv2)
+                    elif (content == 'Lọc Median'):
+                        result = ct3.MedianFilter(image_cv2)
+                    elif (content == 'Sharpen'):
+                        result = ct3.Sharpen(image_cv2)
+                    elif (content == 'Gradient'):
+                        result = ct3.Gradient(image_cv2)
+                    elif (content == 'Spectrum'):
+                        result = ct4.Spectrum(image_cv2)
+                    elif (content == 'Lọc trong miền tần số - highpass filter'):
+                        result = ct4.FrequencyFilter(image_cv2)
+                    elif (content == 'Xóa nhiễu moire'):
+                        result = ct4.RemoveMoire(image_cv2)
+                    elif (content == 'Tạo nhiễu chuyển động'):
+                        result = ct5.CreateMotionNoise(image_cv2)
+                    elif (content == 'Gỡ nhiễu của ảnh có ít nhiễu'):
+                        result = ct5.DenoiseMotion(image_cv2)
+                    elif (content == 'Gỡ nhiễu của ảnh có nhiều nhiễu'):
+                        result = ct5.DenoisesMotion(image_cv2)
+                    elif (content == 'Đếm thành phần liên thông'):
+                        result = ct9.ConnectedComponent(image_cv2)
+                    elif (content == 'Đếm hạt gạo'):
+                        result = ct9.CountRice(image_cv2)
+
+                    st.image(result, caption='Ảnh đã được xử lý')
