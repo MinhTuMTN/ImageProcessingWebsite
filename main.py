@@ -6,6 +6,9 @@ from streamlit_option_menu import option_menu
 import face_detect
 import face_recognition
 import Chapter03 as ct3
+import Chapter04 as ct4
+import Chapter05 as ct5
+import Chapter09 as ct9
 
 st.set_page_config(page_title='Website xử lý ảnh', page_icon='assest/icon.png')
 
@@ -98,6 +101,22 @@ else:
                     result = ct3.Sharpen(image_cv2)
                 elif (content == 'Gradient'):
                     result = ct3.Gradient(image_cv2)
+                elif (content == 'Spectrum'):
+                    result = ct4.Spectrum(image_cv2)
+                elif (content == 'Lọc trong miền tần số - highpass filter'):
+                    result = ct4.FrequencyFilter(image_cv2)
+                elif (content == 'Xóa nhiễu moire'):
+                    result = ct4.RemoveMoire(image_cv2)
+                elif (content == 'Tạo nhiễu chuyển động'):
+                    result = ct5.CreateMotionNoise(image_cv2)
+                elif (content == 'Gỡ nhiễu của ảnh có ít nhiễu'):
+                    result = ct5.DenoiseMotion(image_cv2)
+                elif (content == 'Gỡ nhiễu của ảnh có nhiều nhiễu'):
+                    result = ct5.DenoisesMotion(image_cv2)
+                elif (content == 'Đếm thành phần liên thông'):
+                    result = ct9.ConnectedComponent(image_cv2)
+                elif (content == 'Đếm hạt gạo'):
+                    result = ct9.CountRice(image_cv2)
 
                 st.image(result, caption='Ảnh đã được xử lý')
         if reset:
